@@ -9,6 +9,7 @@ import { useAuthModal } from "@/src/store/useAuthModalStore"
 import toast from "react-hot-toast"
 import { authClient } from "@/src/lib/auth-client"
 import { useRouter } from "next/navigation";
+import { signInWithGoogle } from "@/src/services/signInWithGoogle"
 
 interface RegisterValues {
   name: string,
@@ -123,7 +124,7 @@ const RegisterModal = () => {
           </span>
         </div>
       </div>
-      <Button variant="outline" fullWidth disabled={loading} icon={<FcGoogle size={22} />}>
+      <Button variant="outline" fullWidth disabled={loading} icon={<FcGoogle size={22} onClick={signInWithGoogle} />}>
         Continue with Google
       </Button>
       <p className="text-gray-400 text-center text-sm mt-6 ">

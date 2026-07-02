@@ -1,10 +1,10 @@
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2"
-import FrontendLayout from "../components/layouts/FrontendLayout"
-import { Navbar } from "../components/navbar/Navbar"
-import { Button } from "../components/ui/Button"
-import { DummyProperties } from "../constants/DummyProperties"
-import { PropertyCard } from "../components/properties/PropertyCard"
-import FilterButton from "../components/marketPlace/FilterButton"
+import FrontendLayout from "../../components/layouts/FrontendLayout"
+import { Navbar } from "../../components/navbar/Navbar"
+import { Button } from "../../components/ui/Button"
+import { DummyProperties } from "../../constants/DummyProperties"
+import { PropertyCard } from "../../components/properties/PropertyCard"
+import FilterButton from "../../components/marketPlace/FilterButton"
 
 const MarketPlace = () => {
     return (

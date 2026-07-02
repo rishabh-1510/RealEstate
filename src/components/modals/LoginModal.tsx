@@ -9,6 +9,7 @@ import { useAuthModal } from "@/src/store/useAuthModalStore";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { signInWithGoogle } from "@/src/services/signInWithGoogle";
 
 interface LoginValues {
   email: string,
@@ -115,7 +116,7 @@ const LoginModal = () => {
           </span>
         </div>
       </div>
-      <Button variant="outline" fullWidth disabled={loading} icon={<FcGoogle size={22} />}>
+      <Button variant="outline" fullWidth disabled={loading} icon={<FcGoogle size={22} />} onClick={signInWithGoogle}>
         Continue with Google
       </Button>
 

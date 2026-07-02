@@ -1,8 +1,8 @@
-import FrontendLayout from '@/app/components/layouts/FrontendLayout'
-import { Navbar } from '@/app/components/navbar/Navbar'
-import { PropertyCard } from '@/app/components/properties/PropertyCard'
-import { Button } from '@/app/components/ui/Button'
-import { DummyProperties } from '@/app/constants/DummyProperties'
+
+import FrontendLayout from '@/src/components/layouts/FrontendLayout'
+import { Navbar } from '@/src/components/navbar/Navbar'
+import { PropertyCard } from '@/src/components/properties/PropertyCard'
+import { DummyProperties } from '@/src/constants/DummyProperties'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
 
 const PropertiesPage = () => {

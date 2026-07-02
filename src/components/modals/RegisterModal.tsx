@@ -1,11 +1,14 @@
 "use client"
 
 import Modal from "./Modal"
-import { useState } from "react"
+import React, { useState } from "react"
 import Input from "../ui/Input"
 import { Button } from "../ui/Button"
 import { FcGoogle } from "react-icons/fc"
 import { useAuthModal } from "@/src/store/useAuthModalStore"
+import toast from "react-hot-toast"
+import { authClient } from "@/src/lib/auth-client"
+import { useRouter } from "next/navigation";
 
 interface RegisterValues {
   name: string,
@@ -16,6 +19,7 @@ interface RegisterValues {
 type RegisterErrors = Partial<Record<keyof RegisterValues, string>>
 
 const RegisterModal = () => {
+  const router = useRouter();
   const { openLogin, isRegisterOpen, closeRegister } = useAuthModal();
   const [values, setValues] = useState<RegisterValues>({
     name: "",
@@ -62,13 +66,45 @@ const RegisterModal = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
+
+  const onSubmit = async(e:React.SubmitEvent) =>{
+    e.preventDefault();
+    if(!validate) return;
+    try {
+      setLoading(true);
+      const{error} = await authClient.signUp.email({
+        name:values.name,
+        email:values.email,
+        password:values.password
+      });
+      if(error){
+        toast.error(error.message as string);
+        return;
+      }
+      toast.success("Registration sucessful");
+      router.refresh();
+      setValues({
+        name:"", 
+        email:"",
+        password:""
+      });
+      closeRegister(); 
+
+
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Something went wrong please try again.")
+    }finally{
+      setLoading(false);
+    }
+  }
+
   return (
     <Modal title="Register" onClose={closeRegister} isOpen={isRegisterOpen}>
       <div className="mb-6 space-y-1 ">
         <h2 className="text-2xl font-semibold text-gray-900">Welcome to NextEstate</h2>
         <p className="text-sm text-gray-500 ">Create and account</p>
       </div>
-      <form className="space-y-8">
+      <form className="space-y-8" onSubmit={onSubmit}>
         <Input id="login-name" name="name" label={"name"} value={values.name} onChange={handleChange} error={errors.name} disabled={loading} />
         <Input id="login-email" name="email" label={"Email"} value={values.email} onChange={handleChange} error={errors.email} disabled={loading} />
         <Input id="login-password" name="password" label={"Password"} value={values.password} onChange={handleChange} error={errors.password} disabled={loading} />
@@ -78,10 +114,10 @@ const RegisterModal = () => {
       </form>
       {/* Divider */}
       <div className="relative my-6 ">
-        <div className="flex items-center absolute inset-0">
+        <div className="flex items-center absolute inset-0"> 
           <div className="w-full border-t border-gray-300" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
+        <div className="relative flex justify-center  text-xs uppercase">
           <span className="bg-white px-4 text-gray-500">
             Or
           </span>

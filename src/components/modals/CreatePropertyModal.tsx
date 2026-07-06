@@ -2,13 +2,15 @@
 import Modal from "./Modal"
 import { useState } from "react"
 import { Button } from "../ui/Button"
-
+import axios from 'axios'
 import PropertyTypeCard from "../properties/PropertyTypeCard"
 import Input from "../ui/Input"
 import Counter from "../properties/Counter"
 import ImageUpload from "../properties/ImageUpload"
 import { useCreatePropertyModal } from "@/src/store/useCreatePropertyModalStore"
 import { propertyTypes } from "@/src/constants/PropertTypes"
+import toast from "react-hot-toast"
+import { useRouter } from "next/navigation"
 
 const STEPS = {
     TYPE: 0,
@@ -20,6 +22,7 @@ const STEPS = {
 }
 
 const CreatePropertyModal = () => {
+    const router = useRouter();
     const [step, setStep] = useState(STEPS.TYPE);
     const [loading, setLoading] = useState(false);
     const [propertyType, setPropertyType] = useState("")
@@ -31,10 +34,10 @@ const CreatePropertyModal = () => {
     const [area, setArea] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [image,setImage] = useState<null | File>(null);
-    const [preview , setPreview] = useState<null|string>(null);
-    const [listingType , setListingType] = useState<"rent" | "sale">("sale")
-    const [price , setPrice] = useState('');
+    const [image, setImage] = useState<null | File>(null);
+    const [preview, setPreview] = useState<null | string>(null);
+    const [listingType, setListingType] = useState<"rent" | "sale">("sale")
+    const [price, setPrice] = useState('');
     const stepTitle = () => {
         switch (step) {
             case STEPS.TYPE:
@@ -58,12 +61,63 @@ const CreatePropertyModal = () => {
         }
     }
     const { isOpen, close } = useCreatePropertyModal();
-    const handleImageChange = (file:File)=>{
+    const handleImageChange = (file: File) => {
         setImage(file);
         setPreview(URL.createObjectURL(file));
     }
-    
+
     const createListing = async () => {
+        try {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("description", description);
+            formData.append("price", price);
+            formData.append("location", location);
+            formData.append("address", address);
+            formData.append("area", area);
+            formData.append("propertyType", propertyType);
+            formData.append("listingType", listingType);
+            formData.append("bedrooms", bedRooms.toString());
+            formData.append("bathrooms", bathrooms.toString());
+            formData.append("parkingSpaces", parking.toString());
+            formData.append("price", price.toString());
+            if (image) {
+                formData.append("image", image)
+            }
+
+            await axios.post("/api/properties", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            toast.success("Property created successfully");
+            router.replace("/properties");
+            handleClose();
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.error || "Something Went wrong");
+                return;
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+    const handleClose = () => {
+        setPrice("");
+        setBathrooms(1)
+        setBedrooms(1)
+        setParking(0)
+        setPropertyType("")
+        setLocation("");
+        setTitle("");
+        setDescription("");
+        setImage(null);
+        setPreview(null);
+        setStep(STEPS.TYPE);
+        setAddress("");
+        setArea("");
+        close()
     }
 
     return (
@@ -112,7 +166,7 @@ const CreatePropertyModal = () => {
                     step === STEPS.FEATURE && (
                         <div className="space-y-6 ">
                             <Input name="title" label="Property Title" value={title} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
-                            <Input name="description" label="Property Description" value={description} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)} />
+                            <Input as="textarea" name="description" label="Property Description" value={description} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)} />
                         </div>
                     )
                 }
@@ -122,17 +176,17 @@ const CreatePropertyModal = () => {
                     )
                 }
                 {
-                    step===STEPS.PRICING && (
+                    step === STEPS.PRICING && (
                         <div className="space-y-6">
-                            <select value={listingType} onChange={(e)=>setListingType(e.target.value as "sale" | "rent")} className="h-13
+                            <select value={listingType} onChange={(e) => setListingType(e.target.value as "sale" | "rent")} className="h-13
                             w-full rounded-2xl border border-black/10 px-4 " >
                                 <option value="rent">For Rent</option>
                                 <option value="sale">For Sale</option>
                             </select>
-                            <Input name="price" label={listingType==="sale"?"Sale Price":"Monthly Rent"} type="number" value={price}
-                            onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                                setPrice(e.target.value)
-                            }}/>
+                            <Input name="price" label={listingType === "sale" ? "Sale Price" : "Monthly Rent"} type="number" value={price}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setPrice(e.target.value)
+                                }} />
                         </div>
                     )
                 }

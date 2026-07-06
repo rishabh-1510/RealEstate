@@ -31,11 +31,11 @@ export default function RootLayout({
       className={`${poppins.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background">{children}
-        <RegisterModal/>
-        <LoginModal/>
-        <CreatePropertyModal/>
-        <FilterModal/>
-        <Toaster/>
+        <RegisterModal />
+        <LoginModal />
+        <CreatePropertyModal />
+        <FilterModal />
+        <Toaster />
       </body>
     </html>
   );

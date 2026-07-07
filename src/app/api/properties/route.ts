@@ -66,3 +66,75 @@ export async function POST(req: NextRequest) {
         );
     }
 }
+
+export async function GET(req:NextRequest){
+    try {
+        const searchParams = req.nextUrl.searchParams;
+
+        const search = searchParams.get("search");
+        const propertyType = searchParams.get("propertyType");
+        const location = searchParams.get("location");
+        const minPrice = searchParams.get("minPrice");
+        const maxPrice = searchParams.get("maxPrice");
+
+        const properties = await prisma.property.findMany({
+            where:{
+                ...(propertyType && {
+                    propertyType
+                }),
+                ...(location && {
+                    location:{
+                        contains:location,
+                        mode:"insensitive"
+                    }
+                }),
+                ...(search && {
+                    OR:[
+                         {
+                            title:{
+                                contains:search,
+                                mode:"insensitive"
+                            }
+                         },
+                         {
+                            description:{
+                                contains:search,
+                                mode:"insensitive"
+                            }
+                         },
+                         {
+                            address:{
+                                contains:search,
+                                mode:"insensitive"
+                            }
+                         },
+                         {
+                            location:{
+                                contains:search,
+                                mode:"insensitive"
+                            }
+                         }
+                    ]
+                }),
+                ...(minPrice || maxPrice ? {
+                    price:{
+                        ...(minPrice && {
+                            gte:Number(minPrice)
+                        }),
+                        ...(maxPrice && {
+                            lte:Number(maxPrice)
+                        }),
+                        
+                    }
+                } : {})
+            },
+            orderBy:{
+                createdAt:"desc"
+            }
+        });
+        return NextResponse.json(properties);
+
+    } catch (error) {
+        
+    }
+}

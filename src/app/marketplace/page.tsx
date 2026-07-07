@@ -1,4 +1,4 @@
-import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2"
+
 import FrontendLayout from "../../components/layouts/FrontendLayout"
 import { Navbar } from "../../components/navbar/Navbar"
 import { Button } from "../../components/ui/Button"
@@ -7,7 +7,7 @@ import { PropertyCard } from "../../components/properties/PropertyCard"
 import FilterButton from "../../components/marketPlace/FilterButton"
 
 const MarketPlace = () => {
-    return (
+    return ( 
         <FrontendLayout>
             <Navbar variant="Solid" />
             <div className="mx-auto max-w-7xl p-6 lg:px-12 w-full">

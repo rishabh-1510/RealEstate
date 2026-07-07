@@ -1,8 +1,10 @@
-
-import { DummyProperties } from "@/src/constants/DummyProperties"
 import { PropertyCard } from "../properties/PropertyCard"
+import { getRecentProperties } from "@/src/server-actions/getRecentProperties"
+import { Suspense } from "react"
+import CardSkeleton from "../skeleton/CardSkeleton"
 
-export const RecentProperties = () => {
+export const RecentProperties = async () => {
+
     return (
         <section className='py-24'>
             <div className='mx-auto max-w-7xl px-6 lg:px-12 '>
@@ -19,15 +21,24 @@ export const RecentProperties = () => {
                         our marketplace by trusted property owners and agents.
                     </p>
                 </div>
-                
-                {/* properties grid */}
-                <div className='grid gap-8 md:grid-cols-2 xl:grid-cols-3 my-6 '>
-                    {DummyProperties.map((property)=>(
-                        <PropertyCard key={property.id} property={property}/>
-                    ))}
-                </div>
 
+                {/* properties grid */}
+                <Suspense fallback={<CardSkeleton/>}>
+                    <RecentPropertiesContent />
+                </Suspense>
             </div>
         </section>
+    )
+}
+
+async function RecentPropertiesContent() {
+    const RecentProperties = await getRecentProperties();
+    return (
+        <div className='grid gap-8 md:grid-cols-2 xl:grid-cols-3 my-6 '>
+            {RecentProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+            ))}
+        </div>
+
     )
 }

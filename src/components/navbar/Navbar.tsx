@@ -68,7 +68,7 @@ export const Navbar = ({ variant = "transparent" }: NavbarProps) => {
 
                     <div className="hidden items-center gap-8 lg:flex">
                         {navLinks.map((item) => (
-                            <Link key={item} href={item == "Home" ? "/" : `${item.toLowerCase()}`} className={`text-sm font-medium transition hover:text-primary
+                            <Link key={item} href={item == "Home" ? "/" : `/${item.toLowerCase()}`} className={`text-sm font-medium transition hover:text-primary
                             ${isTranparent ? `text-white/80` : `text-text/70`}`}>
                                 {item}
                             </Link>
@@ -110,7 +110,7 @@ export const Navbar = ({ variant = "transparent" }: NavbarProps) => {
                         ${isTranparent ? `border border-white/10 bg-secondary/95 ` : `border border-black/5 bg-white`}`}>
                         <div className="flex flex-col gap-5 ">
                             {navLinks.map((item) => (
-                                <Link key={item} href={item == "Home" ? "/" : `${item.toLowerCase()}`} className={` transition hover:text-primary
+                                <Link key={item} href={item == "Home" ? "/" : `/${item.toLowerCase()}`} className={` transition hover:text-primary
                                         ${isTranparent ? `text-white/80` : `text-white/70`}`}>
                                     {item}
                                 </Link>

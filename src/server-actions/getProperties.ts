@@ -16,7 +16,8 @@ export async function getProperties(params?:GetPropertiesParams) {
                 propertyType:params?.propertyType,
                 address:params?.address,
                 minPrice:params?.minPrice,
-                maxPrice:params?.maxPrice
+                maxPrice:params?.maxPrice,
+                location:params?.location,
             }
 
         });

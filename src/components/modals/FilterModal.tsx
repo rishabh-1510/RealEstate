@@ -1,27 +1,39 @@
 "use client"
 
 import Modal from "./Modal"
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 import PropertyTypeCard from "../properties/PropertyTypeCard";
 import { Button } from "../ui/Button";
 import Input from "../ui/Input";
 import { useFilterModalStore } from "@/src/store/useFilterModalStore";
 import { propertyTypes } from "@/src/constants/PropertTypes";
+import { useRouter, useSearchParams } from "next/navigation";
 const STEPS = {
     TYPE: 0,
     LOCATION: 1,
     PRICE: 2
 }
-const FilterModal = () => {
+function FilterModalContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const { close, isOpen } = useFilterModalStore();
     const [step, setStep] = useState(STEPS.TYPE);
-    const [propertyType, setPropertyType] = useState("");
-    const [location, setLocation] = useState("");
-    const [address, setAddress] = useState("");
-    const [minprice, setMinPrice] = useState("");
-    const [maxprice, setMaxPrice] = useState("");
+    const [propertyType, setPropertyType] = useState(searchParams.get("propertyType") || "");
+    const [location, setLocation] = useState(searchParams.get("location") || "");
+    const [address, setAddress] = useState(searchParams.get("address") || "");
+    const [minprice, setMinPrice] = useState(searchParams.get("minPrice") || "");
+    const [maxprice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
     const applyFilter = () => {
+        const params = new URLSearchParams();
+        if(propertyType) params.set("propertyType",propertyType)
+        if(location) params.set("location",location);
+        if(address) params.set("address",address);
+        if(minprice) params.set("minPrice",minprice);
+        if(maxprice) params.set("maxPrice",maxprice);
+        router.replace(`/marketplace?${params.toString()}`);
+        setStep(STEPS.TYPE);
+        close() 
 
     }
     const stepTitle = () => {
@@ -94,4 +106,10 @@ const FilterModal = () => {
     )
 }
 
-export default FilterModal
+export default function FilterModal() {
+    return (
+        <Suspense >
+            <FilterModalContent />
+        </Suspense>
+    )
+}

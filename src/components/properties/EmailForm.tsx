@@ -1,9 +1,11 @@
 "use client";
 import Image from 'next/image';
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../ui/Input';
 import { Button } from '../ui/Button';
 import { LuSend } from 'react-icons/lu';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 interface InputValues {
     email: string,
@@ -12,14 +14,21 @@ interface InputValues {
     message: string,
 }
 
-
-const EmailForm = () => {
+interface EmailFormProps{
+    name:string,
+    image:string,
+    email:string,
+    propertyTitle:string,
+    propertyPrice:number
+}
+const EmailForm = ({name,image,email,propertyTitle,propertyPrice}:EmailFormProps) => {
     const [values, setValues] = useState<InputValues>({
         email: "",
         name: "",
         phone: "",
         message: ""
     });
+    const[loading,setLoading] = useState(false);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, name } = e.target;
 
@@ -28,14 +37,42 @@ const EmailForm = () => {
             [name]: value
         }))
     }
+    const sendEmail = async(e:React.SubmitEvent) =>{
+        e.preventDefault();
+        if(!values.email || !values.name || !values.email || !values.message ){
+            toast.error("All fields are required!");
+            return;
+        }
+        try {
+            setLoading(true);
+
+            await axios.post("/api/send-email",{
+                ownerEmail:email,
+                ownerName:name,
+                propertyTitle,
+                propertyPrice,
+                senderEmail:values.email,
+                senderName:values.name,
+                message:values.message,
+                senderPhone:values.phone
+            });
+            toast.success('Message Send Successfully');
+            setValues({message:"",email:"",phone:"",name:""})
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to send email");               
+        }finally{
+            setLoading(false);
+        }
+    }
     return (
         <div>
-            <div className='sticky top-28 rounded-4xl border border-black/5 bg-card p-8 shadow-sm'>
+            <form className='sticky top-28 rounded-4xl border border-black/5 bg-card p-8 shadow-sm' onSubmit={sendEmail}>
                 <div className='flex items-center gap-4 '>
-                    <Image src={'/images/avatar.png'} alt='User' width={50} height={50} className='object-cover rounded-full ' />
+                    <Image src={image} alt='User' width={50} height={50} className='object-cover rounded-full ' />
                     <div>
                         <h3 className='text-xl font-bold text-text'>
-                            Sarah Johnson
+                            {name}
                         </h3>
                         <p>
                             Property Agent
@@ -50,10 +87,10 @@ const EmailForm = () => {
                     <Input onChange={handleChange} id='contact-message' label='Your Message' name='message' value={values.message} as='textarea'/>
                 </div>
 
-                <Button className='mt-2' fullWidth icon={<LuSend/>}>
+                <Button loading={loading} disabled={loading} className='mt-2' fullWidth icon={<LuSend/>} >
                     Send Email
                 </Button>
-            </div>
+            </form>
         </div>
     )
 }

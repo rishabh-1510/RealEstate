@@ -14,7 +14,7 @@ export const Footer = () => {
                 </Link>
                 <div className="items-center gap-8 flex">
                     {navLinks.map((item) => (
-                        <Link key={item} href={item == "Home" ? "/" : `${item.toLowerCase()}`} className={`text-sm font-medium transition hover:text-primary
+                        <Link key={item} href={item == "Home" ? "/" : `/${item.toLowerCase()}`} className={`text-sm font-medium transition hover:text-primary
                             text-text/70`}>
                             {item}
                         </Link>

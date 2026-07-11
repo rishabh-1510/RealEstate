@@ -17,7 +17,7 @@ export async function getProperty(propertyId: string) {
                 }
             }
         });
-        console.log("Property:", property);
+        
         if (!property) {
             return null;
         }

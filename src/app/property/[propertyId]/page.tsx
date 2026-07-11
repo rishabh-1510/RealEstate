@@ -2,13 +2,15 @@
 import FrontendLayout from '@/src/components/layouts/FrontendLayout'
 import { Navbar } from '@/src/components/navbar/Navbar'
 import EmailForm from '@/src/components/properties/EmailForm'
+import OwnerActions from '@/src/components/properties/OwnerActions'
 import PropertyPageSkeleton from '@/src/components/skeleton/PropertyPageSkeleton'
+import { getCurrentUser } from '@/src/server-actions/getCurretnUser'
 import { getProperty } from '@/src/server-actions/getProperty'
 import Image from 'next/image'
-import React, { Suspense } from 'react'
+import  { Suspense } from 'react'
 import { FaMapMarkedAlt, FaRulerCombined } from 'react-icons/fa'
 import { LuBath, LuBedDouble } from 'react-icons/lu'
-
+import { notFound } from "next/navigation";
 export function formatPrice(price: number | string) {
     return Number(price).toLocaleString();
 }
@@ -26,12 +28,18 @@ const PropertyPage = async ({ params }: { params: Promise<{ propertyId: string }
     )
 }
 
-
 export default PropertyPage
 
 async function PropertyContent({ propertyId }: { propertyId: string }) {
-
+    
     const property = await getProperty(propertyId);
+    if (!property) {
+        notFound();
+    }
+    const currentUser = await getCurrentUser();
+    const isPropertyUser = property?.ownerId === currentUser?.id;
+    // console.log('user is ',currentUser)
+    // console.log('property is' , property)
     return (
         <section className='py-15'>
             <div className='mx-auto max-w-7xl px-6 lg:px-12 '>
@@ -80,7 +88,7 @@ async function PropertyContent({ propertyId }: { propertyId: string }) {
                             Property Price
                         </p>
                         <h2 className='mt-2 text-4xl font-bold text-primary'>
-                            ${formatPrice(property?.price || "")}
+                            ₹ {formatPrice(property?.price || "")}
                         </h2>
                     </div>
 
@@ -111,6 +119,12 @@ async function PropertyContent({ propertyId }: { propertyId: string }) {
                                 {property?.description}
                             </p>
                         </div>
+                        <div>
+                            
+                        </div>
+                        {
+                            isPropertyUser && <OwnerActions property={property}/>
+                        }
                     </div>
                     {/* Right */}
                     {property?.owner && (

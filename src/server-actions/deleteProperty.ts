@@ -2,6 +2,7 @@
 
 import { prisma } from "@/src/database/db";
 import { getCurrentUser } from "./getCurretnUser";
+import cloudinary from "../lib/cloudinary";
 
 export async function deleteProperty(propertyId: string) {
   try {
@@ -34,7 +35,7 @@ export async function deleteProperty(propertyId: string) {
         message: "You are not allowed to delete this property",
       };
     }
-
+    await cloudinary.uploader.destroy(property.imagePublicId);
     await prisma.property.delete({
       where: {
         id: propertyId,

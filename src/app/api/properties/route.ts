@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
                 location,
                 address,
                 image:imageData.secure_url,
+                imagePublicId:imageData.public_id,
                 ownerId:currentUser.id
 
             }

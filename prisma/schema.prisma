@@ -42,7 +42,7 @@ model Property {
   location      String
   address       String
   image         String
-
+  imagePublicId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

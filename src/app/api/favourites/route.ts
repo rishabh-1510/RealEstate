@@ -53,22 +53,22 @@ export async function POST(req: NextRequest) {
             }
         });
         if (existingFavorite) {
-            if (existingFavorite) {
-                await prisma.favorite.delete({
-                    where: {
-                        userId_propertyId: {
-                            userId: currentUser.id,
-                            propertyId,
-                        },
-                    },
-                });
 
-                return NextResponse.json({
-                    success: true,
-                    isFavorite: false,
-                    message: "Removed from favorites",
-                });
-            }
+            await prisma.favorite.delete({
+                where: {
+                    userId_propertyId: {
+                        userId: currentUser.id,
+                        propertyId,
+                    },
+                },
+            });
+
+            return NextResponse.json({
+                success: true,
+                isFavorite: false,
+                message: "Removed from favorites",
+            });
+
 
         }
         await prisma.favorite.create({

@@ -24,12 +24,11 @@ model User {
   updatedAt     DateTime   @updatedAt
   sessions      Session[]
   accounts      Account[]
-
-  @@map("property")
+  favorites     Favorite[]
 }
 
 model Property {
-  id            String @id @default(cuid())
+  id            String   @id @default(cuid())
   title         String
   description   String
   propertyType  String
@@ -43,11 +42,12 @@ model Property {
   address       String
   image         String
   imagePublicId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  favorites Favorite[]
 }
 
 model Session {
@@ -96,4 +96,17 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId     String
+  propertyId String
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
 }

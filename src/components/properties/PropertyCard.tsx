@@ -25,7 +25,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
                     <div className="flex items-center justify-between gap-4">
                         {property.listingType === "rent" ? (
                             <h3 className="text-3xl font-bold text-white flex items-baseline gap-1">
-                                ${property.price.toLocaleString()}
+                                ₹{property.price.toLocaleString()}
                                 <span className="text-sm text-white/60">/Month</span>
                             </h3>
                         ) : (

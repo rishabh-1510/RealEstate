@@ -7,7 +7,7 @@ import PropertyPageSkeleton from '@/src/components/skeleton/PropertyPageSkeleton
 import { getCurrentUser } from '@/src/server-actions/getCurretnUser'
 import { getProperty } from '@/src/server-actions/getProperty'
 import Image from 'next/image'
-import  { Suspense } from 'react'
+import { Suspense } from 'react'
 import { FaMapMarkedAlt, FaRulerCombined } from 'react-icons/fa'
 import { LuBath, LuBedDouble } from 'react-icons/lu'
 import { notFound } from "next/navigation";
@@ -21,7 +21,7 @@ const PropertyPage = async ({ params }: { params: Promise<{ propertyId: string }
     return (
         <FrontendLayout>
             <Navbar variant='Solid' />
-            <Suspense fallback={<PropertyPageSkeleton/>}>
+            <Suspense fallback={<PropertyPageSkeleton />}>
                 <PropertyContent propertyId={propertyId} />
             </Suspense>
         </FrontendLayout>
@@ -31,7 +31,7 @@ const PropertyPage = async ({ params }: { params: Promise<{ propertyId: string }
 export default PropertyPage
 
 async function PropertyContent({ propertyId }: { propertyId: string }) {
-    
+
     const property = await getProperty(propertyId);
     if (!property) {
         notFound();
@@ -89,6 +89,11 @@ async function PropertyContent({ propertyId }: { propertyId: string }) {
                         </p>
                         <h2 className='mt-2 text-4xl font-bold text-primary'>
                             ₹ {formatPrice(property?.price || "")}
+                            {property.listingType === "rent" && (
+                                <span className='ml-1 text-base font-medium text-text/50'>
+                                    /month
+                                </span>
+                            )}
                         </h2>
                     </div>
 
@@ -120,16 +125,16 @@ async function PropertyContent({ propertyId }: { propertyId: string }) {
                             </p>
                         </div>
                         <div>
-                            
+
                         </div>
                         {
-                            isPropertyUser && <OwnerActions property={property}/>
+                            isPropertyUser && <OwnerActions property={property} />
                         }
                     </div>
                     {/* Right */}
                     {property?.owner && (
-                        <EmailForm propertyPrice={property.price} propertyTitle={property.title} email={property.owner.email} name={property.owner.name} 
-                        image={property.owner.image || "/images/avatar.png"} 
+                        <EmailForm propertyPrice={property.price} propertyTitle={property.title} email={property.owner.email} name={property.owner.name}
+                            image={property.owner.image || "/images/avatar.png"}
                         />
                     )}
                 </div>

@@ -17,6 +17,17 @@ export async function POST(req: NextRequest) {
             )
         }
         const { propertyId } = await req.json();
+        if (!propertyId) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Property id is required",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
         const property = await prisma.property.findUnique({
             where: {
                 id: propertyId

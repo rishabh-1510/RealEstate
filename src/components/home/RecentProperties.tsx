@@ -2,6 +2,8 @@ import { PropertyCard } from "../properties/PropertyCard"
 import { getRecentProperties } from "@/src/server-actions/getRecentProperties"
 import { Suspense } from "react"
 import CardSkeleton from "../skeleton/CardSkeleton"
+import { getFavoriteProperties } from "@/src/server-actions/getFavouriteProperties"
+
 
 export const RecentProperties = async () => {
 
@@ -33,10 +35,11 @@ export const RecentProperties = async () => {
 
 async function RecentPropertiesContent() {
     const RecentProperties = await getRecentProperties();
+     const favoriteProperties = await getFavoriteProperties();
     return (
         <div className='grid gap-8 md:grid-cols-2 xl:grid-cols-3 my-6 '>
             {RecentProperties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+                <PropertyCard key={property.id} property={property} favoriteProperties={favoriteProperties} />
             ))}
         </div>
 

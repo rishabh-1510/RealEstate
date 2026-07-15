@@ -2,6 +2,7 @@ import { PropertyCard } from "@/src/components/properties/PropertyCard";
 import { getProperties } from "@/src/server-actions/getProperties";
 import { Property } from "@/src/types/property";
 import EmptyState from "../ui/EmptyState";
+import { getFavoriteProperties } from "@/src/server-actions/getFavouriteProperties";
 
 interface MarketPlaceProps {
     searchParam: {
@@ -15,6 +16,7 @@ interface MarketPlaceProps {
 }
 
 export default async function MarketPlace({ searchParam }: MarketPlaceProps) {
+    const favoriteProperties = await getFavoriteProperties();
     const properties: Property[] = await getProperties({
         search: searchParam.search,
         address: searchParam.address,
@@ -32,7 +34,7 @@ export default async function MarketPlace({ searchParam }: MarketPlaceProps) {
     return (
         <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 my-4">
             {properties.map((property) => (
-                <PropertyCard property={property} key={property.id} />
+                <PropertyCard property={property} key={property.id} favoriteProperties={favoriteProperties}/>
             ))}
         </div>
     )

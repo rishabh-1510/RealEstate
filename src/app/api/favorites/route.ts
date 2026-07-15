@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({
+            isFavorite: true,
             success: true,
             message: "Property added to favorites",
         });

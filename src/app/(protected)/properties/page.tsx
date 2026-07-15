@@ -4,6 +4,7 @@ import { Navbar } from '@/src/components/navbar/Navbar'
 import { PropertyCard } from '@/src/components/properties/PropertyCard'
 import CardSkeleton from '@/src/components/skeleton/CardSkeleton'
 import EmptyState from '@/src/components/ui/EmptyState'
+import { getFavoriteProperties } from '@/src/server-actions/getFavouriteProperties';
 import { getUserProperties } from '@/src/server-actions/getUserProperties'
 import { Suspense } from 'react'
 
@@ -29,6 +30,7 @@ const PropertiesPage = () => {
 export default PropertiesPage
 
 async function PropertiesContent() {
+    const favoriteProperties =await getFavoriteProperties();
     const propeties = await getUserProperties();
     if (propeties.length === 0) {
         return <EmptyState title='No Properties Found' subTitle='You currently have no prooperties available .Check back later aftercreating new listings'></EmptyState> 
@@ -36,7 +38,7 @@ async function PropertiesContent() {
     return (
         <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 my-4">
             {propeties.map((property) => (
-                <PropertyCard property={property} key={property.id} />
+                <PropertyCard property={property} key={property.id} favoriteProperties={favoriteProperties}/>
             ))}
         </div>
     )
